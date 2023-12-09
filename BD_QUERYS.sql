@@ -1,0 +1,12 @@
+CREATE DATABASE IF NOT EXISTS verzel_cars;
+
+CREATE TABLE veiculos IF NOT EXISTS(
+    id INT NOT NULL AUTO_INCREMENT,
+    nome VARCHAR(50) NOT NULL,
+    marca VARCHAR(15) NOT NULL,
+    modelo VARCHAR(15) NOT NULL,
+    photoUrl VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+SELECT * FROM usuario;
