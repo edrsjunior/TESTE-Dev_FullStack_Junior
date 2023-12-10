@@ -2,7 +2,7 @@ from typing import Union
 from fastapi import FastAPI
 from Middlewares.connectDB import connection
 from Models.userModel import User
-from  Middlewares.encryptPass import encryptPass,descripPass
+from  Middlewares.encryptPass import encryptPass,descriptPass
 from fastapi import HTTPException
 
 app = FastAPI()
@@ -22,7 +22,8 @@ async def newUser(usuario: User):
 async def loginUser(usuario: User):
     cursor = connection.cursor()
 
-    cursor.execute("SELECT COUNT(*) AS total FROM usuario WHERE email = ?", (usuario.email))
+    
+    cursor.execute("SELECT COUNT(*) AS total FROM usuario WHERE email = %(usuario.email)s", {'usuario.email':usuario.email})
     result = cursor.fetchone()[0]
 
     if result == 0:
@@ -32,14 +33,15 @@ async def loginUser(usuario: User):
         )
   
     
-    # cursor.execute("SELECT senha FROM usuario WHERE email = ?",(usuario.email,))
-    # result = cursor.fetchone()[0]
+    cursor.execute("SELECT senha FROM usuario WHERE email = %s", (usuario.email,))
+    result = cursor.fetchone()[0]
 
-    # if not descripPass(usuario.senha,result):
-    #     raise HTTPException(
-    #         status_code= 401,
-    #         detail="Senha Incorreta"
-    #     )
+    if  not descriptPass(usuario.senha, result):
+        raise HTTPException(
+            status_code= 401,
+            detail="Senha Incorreta"
+        )
+    print("OK AUTENTICADO")
         
 
 @app.get("/items/{item_id}")
