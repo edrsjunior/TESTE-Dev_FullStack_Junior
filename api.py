@@ -1,12 +1,16 @@
+import datetime
 from typing import Union
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, requests
 from Middlewares.connectDB import connection
 from Models.userModel import User
 from  Middlewares.encryptPass import encryptPass,descriptPass
+from Middlewares.jwtVerify import verifyJWTToken
 from fastapi import HTTPException
 import jwt
 from dotenv import load_dotenv
 import os
+from Models.tokenModel import token
+
 
 load_dotenv()
 app = FastAPI()
@@ -46,9 +50,35 @@ async def loginUser(usuario: User):
         )
         
     # CREATE TOKEN
-    encodeToken = jwt.encode({"token": usuario.email},os.getenv("MY_JET_KEY"),None)
+    # VAMOS CRIAR UM TOKEN TEMP
+    payload = {
+        "email" : usuario.email,
+        "exp": datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(minutes=15)
+         
+    }
+    print(os.getenv("MY_JWT_KEY"))
+    encodeToken = jwt.encode(payload,os.getenv("MY_JWT_KEY"),"HS256")
     return {"token" : encodeToken}
         
+@app.post("/carros")
+async def cadastrarCarro(tokenModel: token):
+    
+    print(tokenModel.token)
+    try:
+        verifyJWTToken(tokenModel.token)
+           
+    except jwt.exceptions.InvalidSignatureError:
+             raise HTTPException(
+                status_code= 498,
+                detail="Invalid Token"
+            )
+    
+    except jwt.ExpiredSignatureError:
+             raise HTTPException(
+                status_code= 498,
+                detail="Expired Token"
+            )
+    print("AUTENTICADO MEU CHEFE")    
 
 @app.get("/items/{item_id}")
 async def read_item(item_id: int, q: Union[str, None] = None):
