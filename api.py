@@ -4,7 +4,11 @@ from Middlewares.connectDB import connection
 from Models.userModel import User
 from  Middlewares.encryptPass import encryptPass,descriptPass
 from fastapi import HTTPException
+import jwt
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 app = FastAPI()
 
 @app.get("/")
@@ -31,7 +35,6 @@ async def loginUser(usuario: User):
             status_code= 401,
             detail="Usuário não encontrado"
         )
-  
     
     cursor.execute("SELECT senha FROM usuario WHERE email = %s", (usuario.email,))
     result = cursor.fetchone()[0]
@@ -41,7 +44,10 @@ async def loginUser(usuario: User):
             status_code= 401,
             detail="Senha Incorreta"
         )
-    print("OK AUTENTICADO")
+        
+    # CREATE TOKEN
+    encodeToken = jwt.encode({"token": usuario.email},os.getenv("MY_JET_KEY"),None)
+    return {"token" : encodeToken}
         
 
 @app.get("/items/{item_id}")
