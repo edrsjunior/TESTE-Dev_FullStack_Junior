@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import os
 from Models.tokenModel import token
 
+SESSION_TIME = 60
 
 load_dotenv()
 app = FastAPI()
@@ -53,7 +54,7 @@ async def loginUser(usuario: User):
     # VAMOS CRIAR UM TOKEN TEMP
     payload = {
         "email" : usuario.email,
-        "exp": datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(minutes=15)
+        "exp": datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(minutes=SESSION_TIME)
          
     }
     print(os.getenv("MY_JWT_KEY"))
