@@ -1,6 +1,6 @@
 import datetime
-from typing import Union
-from fastapi import FastAPI, Request, requests
+from typing import Annotated, Union
+from fastapi import FastAPI, Form, Request, UploadFile, requests
 from Middlewares.connectDB import connection
 from Models.userModel import User
 from  Middlewares.encryptPass import encryptPass,descriptPass
@@ -9,7 +9,12 @@ from fastapi import HTTPException
 import jwt
 from dotenv import load_dotenv
 import os
+from Models.carroModel import Carro
 from Models.tokenModel import token
+from Middlewares.uploadImage import uploadImg
+from pydantic import BaseModel
+from fastapi import FastAPI, Form
+from fastapi import FastAPI, File, UploadFile
 
 SESSION_TIME = 60
 
@@ -62,14 +67,16 @@ async def loginUser(usuario: User):
     return {"token" : encodeToken}
         
 @app.post("/carros")
-async def cadastrarCarro(tokenModel: token):
-    
-    print(tokenModel.token)
+async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()], token: Annotated[str,Form()],image: Annotated[UploadFile, File()]):
+    car = Carro(nome=nome, marca=marca, modelo=modelo, valor=valor, desc=desc)
+    # print(car)
+    #print(token)
+
     try:
-        verifyJWTToken(tokenModel.token)
+        verifyJWTToken(token)
            
     except jwt.exceptions.InvalidSignatureError:
-             raise HTTPException(
+            raise HTTPException(
                 status_code= 498,
                 detail="Invalid Token"
             )
@@ -79,7 +86,20 @@ async def cadastrarCarro(tokenModel: token):
                 status_code= 498,
                 detail="Expired Token"
             )
-    print("AUTENTICADO MEU CHEFE")    
+    print("AUTENTICADO MEU CHEFE")
+
+    #VAMOS SALVAr A IMG
+    content = await image.read()
+    urlImg = await uploadImg(content,"carros/")
+    #AGORA VAMOS SALVAr AS INFOs no BD e a URL DO CAR
+    query = "INSERT INTO veiculosAnuncios (nome, marca, modelo, valor, descricao, photoUrl) VALUES (%s, %s, %s, %s, %s, %s)"
+    cursor = connection.cursor()
+    try:
+        cursor.execute(query,(nome, marca, modelo,valor,desc,urlImg['url']))
+        connection.commit()
+    except:
+        print("ERRO PAI")
+    
 
 @app.get("/items/{item_id}")
 async def read_item(item_id: int, q: Union[str, None] = None):
