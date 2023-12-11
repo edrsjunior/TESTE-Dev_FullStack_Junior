@@ -8,7 +8,7 @@ load_dotenv()
 
 KEY = os.getenv("MY_JWT_KEY")
 
-def verifyJWTToken(token: str) ->bool:
-    if not jwt.decode(token,KEY, algorithms=["HS256"]):
-        return 0
-    return 1
+def verifyJWTToken(token: str) ->int:
+    decoded = jwt.decode(token,KEY, algorithms=["HS256"])
+    
+    return decoded['id']

@@ -4,6 +4,7 @@ from fastapi import Depends, FastAPI, Form, Request, UploadFile, requests
 from fastapi.security import OAuth2PasswordBearer
 from Middlewares.connectDB import connection
 from Models.userModel import User
+from Models.loginModel import UserLogin
 from  Middlewares.encryptPass import encryptPass,descriptPass
 from Middlewares.jwtVerify import verifyJWTToken
 from fastapi import HTTPException
@@ -11,7 +12,6 @@ import jwt
 from dotenv import load_dotenv
 import os
 from Models.carroModel import Carro
-from Models.tokenModel import token
 from Middlewares.uploadImage import uploadImg
 from pydantic import BaseModel
 from fastapi import FastAPI, Form
@@ -29,38 +29,38 @@ async def read_root():
 
 @app.post("/users")
 async def newUser(usuario: User):
-    query = "INSERT INTO usuario (email, senha) VALUES (%s, %s)"
+    query = "INSERT INTO usuario (nome, sobrenome,email, senha) VALUES (%s, %s, %s, %s)"
     cursor = connection.cursor()
-    cursor.execute(query,(usuario.email, encryptPass(usuario.senha)))
+    cursor.execute(query,(usuario.nome, usuario.sobrenome,usuario.email, encryptPass(usuario.senha)))
     connection.commit()
 
 @app.post("/login")
-async def loginUser(usuario: User):
+async def loginUser(usuario: UserLogin):
     cursor = connection.cursor()
 
     
-    cursor.execute("SELECT COUNT(*) AS total FROM usuario WHERE email = %(usuario.email)s", {'usuario.email':usuario.email})
+    cursor.execute("SELECT COUNT(*) AS total FROM usuario WHERE email = %(usuario.email)s AND ativo = TRUE", {'usuario.email':usuario.email})
     result = cursor.fetchone()[0]
-
     if result == 0:
         raise HTTPException(
             status_code= 401,
-            detail="Usuário não encontrado"
+            detail="Usuário ou senha incorreto"
         )
     
-    cursor.execute("SELECT senha FROM usuario WHERE email = %s", (usuario.email,))
-    result = cursor.fetchone()[0]
+    cursor.execute("SELECT id,senha FROM usuario WHERE email = %s", (usuario.email,))
+    result = cursor.fetchone()
+    
 
-    if  not descriptPass(usuario.senha, result):
+    if  not descriptPass(usuario.senha, result[1]):
         raise HTTPException(
             status_code= 401,
-            detail="Senha Incorreta"
+            detail="Usuário ou senha incorreto"
         )
         
     # CREATE TOKEN
     # VAMOS CRIAR UM TOKEN TEMP
     payload = {
-        "email" : usuario.email,
+        "id" : result[0],
         "exp": datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(minutes=SESSION_TIME)
          
     }
@@ -71,11 +71,9 @@ async def loginUser(usuario: User):
 @app.post("/carros")
 async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()],image: Annotated[UploadFile, File()],token: Annotated[str, Depends(oauth2_scheme)]):
     car = Carro(nome=nome, marca=marca, modelo=modelo, valor=valor, desc=desc)
-    # print(car)
-    print(token)
 
     try:
-        verifyJWTToken(token)
+        userId = verifyJWTToken(token)
            
     except jwt.exceptions.InvalidSignatureError:
             raise HTTPException(
@@ -88,21 +86,24 @@ async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form(
                 status_code= 498,
                 detail="Expired Token"
             )
-    print("AUTENTICADO MEU CHEFE")
+    # print("AUTENTICADO MEU CHEFE")
 
     #VAMOS SALVAr A IMG
     content = await image.read()
     urlImg = await uploadImg(content,"carros/")
     #AGORA VAMOS SALVAr AS INFOs no BD e a URL DO CAR
-    query = "INSERT INTO veiculosAnuncios (nome, marca, modelo, valor, descricao, photoUrl) VALUES (%s, %s, %s, %s, %s, %s)"
+    query = "INSERT INTO veiculosAnuncio (nome, marca, modelo, valor, descricao, photoUrl,creator) VALUES (%s, %s, %s, %s, %s, %s, %s)"
     cursor = connection.cursor()
     try:
-        cursor.execute(query,(nome, marca, modelo,valor,desc,urlImg['url']))
+        cursor.execute(query,(nome, marca, modelo,valor,desc,urlImg['url'],userId))
         connection.commit()
     except:
-        print("ERRO PAI")
+        raise HTTPException(
+                status_code= 500,
+                detail="Internal Error"
+            )
     
 
-@app.get("/items/{item_id}")
-async def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+# @app.get("/items/{item_id}")
+# async def read_item(item_id: int, q: Union[str, None] = None):
+#     return {"item_id": item_id, "q": q}
