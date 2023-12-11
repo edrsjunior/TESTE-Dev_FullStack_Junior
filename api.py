@@ -5,14 +5,14 @@ from fastapi.security import OAuth2PasswordBearer
 from Middlewares.connectDB import connection
 from Models.userModel import User
 from Models.loginModel import UserLogin
-from  Middlewares.encryptPass import encryptPass,descriptPass
-from Middlewares.jwtVerify import verifyJWTToken
+from  Utils.encryptPass import encryptPass,descriptPass
+from Utils.jwtVerify import verifyJWTToken
 from fastapi import HTTPException
 import jwt
 from dotenv import load_dotenv
 import os
 from Models.carroModel import Carro
-from Middlewares.uploadImage import uploadImg
+from Utils.uploadImage import uploadImg
 from pydantic import BaseModel
 from fastapi import FastAPI, Form
 from fastapi import FastAPI, File, UploadFile
@@ -31,8 +31,15 @@ async def read_root():
 async def newUser(usuario: User):
     query = "INSERT INTO usuario (nome, sobrenome,email, senha) VALUES (%s, %s, %s, %s)"
     cursor = connection.cursor()
-    cursor.execute(query,(usuario.nome, usuario.sobrenome,usuario.email, encryptPass(usuario.senha)))
-    connection.commit()
+    try:
+        cursor.execute(query,(usuario.nome, usuario.sobrenome,usuario.email, encryptPass(usuario.senha)))
+        connection.commit()
+    except:
+        raise HTTPException(
+            status_code= 401,
+            detail="Usuer Already Exists"
+        )
+    
 
 @app.post("/login")
 async def loginUser(usuario: UserLogin):
