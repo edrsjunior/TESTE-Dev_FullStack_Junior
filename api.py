@@ -1,6 +1,7 @@
 import datetime
 from typing import Annotated, Union
-from fastapi import FastAPI, Form, Request, UploadFile, requests
+from fastapi import Depends, FastAPI, Form, Request, UploadFile, requests
+from fastapi.security import OAuth2PasswordBearer
 from Middlewares.connectDB import connection
 from Models.userModel import User
 from  Middlewares.encryptPass import encryptPass,descriptPass
@@ -20,6 +21,7 @@ SESSION_TIME = 60
 
 load_dotenv()
 app = FastAPI()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @app.get("/")
 async def read_root():
@@ -67,10 +69,10 @@ async def loginUser(usuario: User):
     return {"token" : encodeToken}
         
 @app.post("/carros")
-async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()], token: Annotated[str,Form()],image: Annotated[UploadFile, File()]):
+async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()],image: Annotated[UploadFile, File()],token: Annotated[str, Depends(oauth2_scheme)]):
     car = Carro(nome=nome, marca=marca, modelo=modelo, valor=valor, desc=desc)
     # print(car)
-    #print(token)
+    print(token)
 
     try:
         verifyJWTToken(token)
