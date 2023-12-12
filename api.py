@@ -37,7 +37,7 @@ async def newUser(usuario: User):
     except:
         raise HTTPException(
             status_code= 401,
-            detail="Usuer Already Exists"
+            detail="Email Already in Use"
         )
     
 
@@ -74,10 +74,26 @@ async def loginUser(usuario: UserLogin):
     print(os.getenv("MY_JWT_KEY"))
     encodeToken = jwt.encode(payload,os.getenv("MY_JWT_KEY"),"HS256")
     return {"token" : encodeToken}
-        
+
+@app.get("/carros")
+async def listarCarros():
+    query = "SELECT nome, marca, modelo, valor, descricao, photoUrl,creator FROM veiculosAnuncio WHERE ativo = 1"
+    cursor = connection.cursor()
+    
+    try:
+         cursor.execute(query)
+    except:
+        raise HTTPException(
+            status_code= 500,
+            detail="Error to get data"
+        )
+
+    result = cursor.fetchall()
+
+    return result
+
 @app.post("/carros")
 async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()],image: Annotated[UploadFile, File()],token: Annotated[str, Depends(oauth2_scheme)]):
-    car = Carro(nome=nome, marca=marca, modelo=modelo, valor=valor, desc=desc)
 
     try:
         userId = verifyJWTToken(token)
@@ -93,7 +109,11 @@ async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form(
                 status_code= 498,
                 detail="Expired Token"
             )
+    
+
     # print("AUTENTICADO MEU CHEFE")
+
+    # car = Carro(nome=nome, marca=marca, modelo=modelo, valor=valor, desc=desc)
 
     #VAMOS SALVAr A IMG
     content = await image.read()
@@ -103,6 +123,79 @@ async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form(
     cursor = connection.cursor()
     try:
         cursor.execute(query,(nome, marca, modelo,valor,desc,urlImg['url'],userId))
+        connection.commit()
+    except:
+        raise HTTPException(
+                status_code= 500,
+                detail="Internal Error"
+            )
+    
+@app.delete("/carros/{item_id}")
+async def deleteCarro(item_id: int,token: Annotated[str, Depends(oauth2_scheme)]):
+    try:
+        userId = verifyJWTToken(token)
+        
+    except jwt.exceptions.InvalidSignatureError:
+            raise HTTPException(
+                status_code= 498,
+                detail="Invalid Token"
+            )
+
+    except jwt.ExpiredSignatureError:
+                raise HTTPException(
+                status_code= 498,
+                detail="Expired Token"
+            )
+    query = "UPDATE veiculosAnuncio SET ativo = 0 WHERE id = %s"
+    cursor = connection.cursor()
+   
+    cursor.execute(query,(item_id,))
+    connection.commit()
+
+@app.put("/carros/{item_id}")
+async def updateCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()],image: Annotated[UploadFile, File()],item_id: int,token: Annotated[str, Depends(oauth2_scheme)]):   
+    try:
+        userId = verifyJWTToken(token)
+        
+    except jwt.exceptions.InvalidSignatureError:
+            raise HTTPException(
+                status_code= 498,
+                detail="Invalid Token"
+            )
+
+    except jwt.ExpiredSignatureError:
+                raise HTTPException(
+                status_code= 498,
+                detail="Expired Token"
+            )
+    
+    #CHECK SE O POST É DA PESSOA 
+    query = "SELECT creator from veiculosAnuncio creator WHERE id = %s"
+    cursor = connection.cursor()
+    cursor.execute(query,(item_id,))
+    result = cursor.fetchone()
+
+    if not result:
+         raise HTTPException(
+                status_code= 404,
+                detail="Object Not Found"
+            )
+
+    if not (result[0] == userId):
+        raise HTTPException(
+                status_code= 405,
+                detail="Method Not Allowed to this Object"
+            )
+
+    ################################
+
+    content = await image.read()
+    urlImg = await uploadImg(content,"carros/")
+    #AGORA VAMOS SALVAr AS INFOs no BD e a URL DO CAR
+    query = "INSERT INTO veiculosAnuncio (nome, marca, modelo, valor, descricao, photoUrl) VALUES (%s, %s, %s, %s, %s, %s)"
+    cursor = connection.cursor()
+    try:
+        cursor.execute(query,(nome, marca, modelo,valor,desc,urlImg['url']))
         connection.commit()
     except:
         raise HTTPException(
