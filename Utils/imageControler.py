@@ -13,15 +13,21 @@ cloudinary.config(
   api_secret = os.getenv("CLOUDINARY_SECRET"),
 )
 
-async def uploadImg(image:UploadFile, folder: str) -> str:
+async def uploadImg(image:UploadFile, userFolder: int,) -> str:
     
   response = cloudinary.uploader.upload(
     image, 
     width = 600,
     crop = "limit",
-    folder = folder
-    # overwrite = True,
-    # public_id = id
+    folder = f'carros/{userFolder}/',
+    overwrite = True,
     )
 
   return response
+
+async def deleteImg(idPost: str):
+  try:
+    cloudinary.api.delete_resources_by_prefix(idPost)
+  except:
+    raise Exception("Vailed to delete image")
+  

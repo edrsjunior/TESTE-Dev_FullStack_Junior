@@ -12,7 +12,7 @@ import jwt
 from dotenv import load_dotenv
 import os
 from Models.carroModel import Carro
-from Utils.uploadImage import uploadImg
+from Utils.imageControler import uploadImg,deleteImg
 from pydantic import BaseModel
 from fastapi import FastAPI, Form
 from fastapi import FastAPI, File, UploadFile
@@ -115,21 +115,28 @@ async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form(
 
     # car = Carro(nome=nome, marca=marca, modelo=modelo, valor=valor, desc=desc)
 
-    #VAMOS SALVAr A IMG
-    content = await image.read()
-    urlImg = await uploadImg(content,"carros/")
+   
     #AGORA VAMOS SALVAr AS INFOs no BD e a URL DO CAR
-    query = "INSERT INTO veiculosAnuncio (nome, marca, modelo, valor, descricao, photoUrl,creator) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    query = "INSERT INTO veiculosAnuncio (nome, marca, modelo, valor, descricao,creator) VALUES (%s, %s, %s, %s, %s, %s)"
     cursor = connection.cursor()
     try:
-        cursor.execute(query,(nome, marca, modelo,valor,desc,urlImg['url'],userId))
+        cursor.execute(query,(nome, marca, modelo,valor,desc,userId))
+        connection.commit()
+         #VAMOS SALVAr A IMG
+        lastInsert = cursor.lastrowid
+        content = await image.read()
+        urlImg = await uploadImg(content,userId)
+        query = "UPDATE veiculosAnuncio SET photoUrl = %s WHERE id = %s"
+        cursor.execute(query, (urlImg['url'],lastInsert))
         connection.commit()
     except:
         raise HTTPException(
                 status_code= 500,
                 detail="Internal Error"
-            )
-    
+            )   
+
+    return {"idPostCreated" : lastInsert}
+
 @app.delete("/carros/{item_id}")
 async def deleteCarro(item_id: int,token: Annotated[str, Depends(oauth2_scheme)]):
     try:
@@ -188,14 +195,14 @@ async def updateCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()],
             )
 
     ################################
-
+    # deleteImg(item_id)
     content = await image.read()
-    urlImg = await uploadImg(content,"carros/")
+    urlImg = await uploadImg(content,userId)
     #AGORA VAMOS SALVAr AS INFOs no BD e a URL DO CAR
-    query = "INSERT INTO veiculosAnuncio (nome, marca, modelo, valor, descricao, photoUrl) VALUES (%s, %s, %s, %s, %s, %s)"
+    query = "UPDATE veiculosAnuncio SET nome = %s, marca = %s, modelo = %s, valor = %s, descricao = %s, photoUrl = %s WHERE id = %s"
     cursor = connection.cursor()
     try:
-        cursor.execute(query,(nome, marca, modelo,valor,desc,urlImg['url']))
+        cursor.execute(query,(nome, marca, modelo,valor,desc,urlImg['url'],item_id))
         connection.commit()
     except:
         raise HTTPException(
