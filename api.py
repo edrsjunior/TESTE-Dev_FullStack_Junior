@@ -77,7 +77,7 @@ async def loginUser(usuario: UserLogin):
 
 @app.get("/carros")
 async def listarCarros():
-    query = "SELECT nome, marca, modelo, valor, descricao, photoUrl,creator FROM veiculosAnuncio WHERE ativo = 1"
+    query = "SELECT nome, marca, modelo, ano, km, valor, descricao, photoUrl,creator FROM veiculosAnuncio WHERE ativo = 1"
     cursor = connection.cursor()
     
     try:
@@ -93,7 +93,7 @@ async def listarCarros():
     return result
 
 @app.post("/carros")
-async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()],image: Annotated[UploadFile, File()],token: Annotated[str, Depends(oauth2_scheme)]):
+async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], ano: Annotated[int, Form()], km: Annotated[float, Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()],image: Annotated[UploadFile, File()],token: Annotated[str, Depends(oauth2_scheme)]):
 
     try:
         userId = verifyJWTToken(token)
@@ -117,10 +117,10 @@ async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form(
 
    
     #AGORA VAMOS SALVAr AS INFOs no BD e a URL DO CAR
-    query = "INSERT INTO veiculosAnuncio (nome, marca, modelo, valor, descricao,creator) VALUES (%s, %s, %s, %s, %s, %s)"
+    query = "INSERT INTO veiculosAnuncio (nome, marca, modelo, ano, km, valor, descricao,creator) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
     cursor = connection.cursor()
     try:
-        cursor.execute(query,(nome, marca, modelo,valor,desc,userId))
+        cursor.execute(query,(nome, marca, modelo, ano, km,valor,desc,userId))
         connection.commit()
          #VAMOS SALVAr A IMG
         lastInsert = cursor.lastrowid
@@ -160,7 +160,7 @@ async def deleteCarro(item_id: int,token: Annotated[str, Depends(oauth2_scheme)]
     connection.commit()
 
 @app.put("/carros/{item_id}")
-async def updateCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()],image: Annotated[UploadFile, File()],item_id: int,token: Annotated[str, Depends(oauth2_scheme)]):   
+async def updateCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], ano: Annotated[int, Form()], km: Annotated[float, Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()],image: Annotated[UploadFile, File()],item_id: int,token: Annotated[str, Depends(oauth2_scheme)]):   
     try:
         userId = verifyJWTToken(token)
         
@@ -177,7 +177,7 @@ async def updateCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()],
             )
     
     #CHECK SE O POST É DA PESSOA 
-    query = "SELECT creator from veiculosAnuncio creator WHERE id = %s"
+    query = "SELECT creator from veiculosAnuncio creator WHERE id = %s AND ativo = TRUE"
     cursor = connection.cursor()
     cursor.execute(query,(item_id,))
     result = cursor.fetchone()
@@ -199,10 +199,10 @@ async def updateCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()],
     content = await image.read()
     urlImg = await uploadImg(content,userId)
     #AGORA VAMOS SALVAr AS INFOs no BD e a URL DO CAR
-    query = "UPDATE veiculosAnuncio SET nome = %s, marca = %s, modelo = %s, valor = %s, descricao = %s, photoUrl = %s WHERE id = %s"
+    query = "UPDATE veiculosAnuncio SET nome = %s, marca = %s, modelo = %s, ano =%s, km = %s, valor = %s, descricao = %s, photoUrl = %s WHERE id = %s"
     cursor = connection.cursor()
     try:
-        cursor.execute(query,(nome, marca, modelo,valor,desc,urlImg['url'],item_id))
+        cursor.execute(query,(nome, marca, modelo, ano, km, valor,desc,urlImg['url'],item_id))
         connection.commit()
     except:
         raise HTTPException(
