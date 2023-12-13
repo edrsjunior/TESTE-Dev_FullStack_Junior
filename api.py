@@ -2,6 +2,7 @@ import datetime
 from typing import Annotated, Union
 from fastapi import Depends, FastAPI, Form, Request, UploadFile, requests
 from fastapi.security import OAuth2PasswordBearer
+from Middlewares.checkAdm import isAdminUser
 from Middlewares.connectDB import connection
 from Models.userModel import User
 from Models.loginModel import UserLogin
@@ -91,6 +92,7 @@ async def listarCarros():
     result = cursor.fetchall()
 
     return result
+
 
 @app.post("/carros")
 async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], ano: Annotated[int, Form()], km: Annotated[float, Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()],image: Annotated[UploadFile, File()],token: Annotated[str, Depends(oauth2_scheme)]):
@@ -187,12 +189,13 @@ async def updateCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()],
                 status_code= 404,
                 detail="Object Not Found"
             )
-
-    if not (result[0] == userId):
-        raise HTTPException(
-                status_code= 405,
-                detail="Method Not Allowed to this Object"
-            )
+    
+    if not isAdminUser(userId):
+        if not (result[0] == userId):
+            raise HTTPException(
+                    status_code= 405,
+                    detail="Method Not Allowed to this Object"
+                )
 
     ################################
     # deleteImg(item_id)
