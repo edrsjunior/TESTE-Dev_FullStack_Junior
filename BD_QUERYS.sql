@@ -6,10 +6,13 @@ CREATE TABLE IF NOT EXISTS veiculosAnuncio(
     nome VARCHAR(50) NOT NULL,
     marca VARCHAR(50) NOT NULL,
     modelo VARCHAR(20) NOT NULL,
+    ano int NOT NULL,
+    km float NOT NULL,
     valor FLOAT NOT NULL,
     descricao VARCHAR(500),
-    photoUrl VARCHAR(200) NOT NULL,
+    photoUrl VARCHAR(200),
     creator INT,
+    modificationDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     ativo BOOLEAN DEFAULT TRUE,
     PRIMARY KEY (id),
     FOREIGN KEY (creator) REFERENCES usuario(id)
@@ -21,11 +24,13 @@ CREATE TABLE IF NOT EXISTS usuario(
     sobrenome VARCHAR(20) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     senha VARCHAR(255) NOT NULL,
-    token VARCHAR(255),
+    isAdmin BOOLEAN DEFAULT False,
     modificationDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY(id)
 );
+
+UPDATE usuario SET isAdmin = 1 WHERE email = "admin001.com";
 
 SELECT * FROM usuario;
 SELECT * FROM veiculosAnuncio;
@@ -33,4 +38,6 @@ SELECT * FROM veiculosAnuncio;
 DROP TABLE veiculosAnuncio;
 DROP TABLE usuario;
 
-
+UPDATE usuario 
+SET ativo= TRUE
+WHERE id = 1; 

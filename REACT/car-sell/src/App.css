@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ALGUNS FIX VISUAIS PARA FICAR MELHOR VISUALMENTE */
+
+.card-img-top {
+  width: 100%;
+  height: 40vh;
+  object-fit: cover;
+  }
+
+.valor{
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+}
+
+.descricao{
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: rgb(83, 83, 83);
+  border: none;
+  min-height: 8rem;
+}
+
+.infoAnoKm{
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: rgb(83, 83, 83);
+}
+
+.card-title{
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  min-height: 3rem;
+}
+
+.row>* {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.list-group{
+  --bs-list-group-item-padding-x: 0;
+}
