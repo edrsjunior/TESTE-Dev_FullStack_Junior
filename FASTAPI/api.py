@@ -187,6 +187,26 @@ async def deleteCarro(item_id: int,token: Annotated[str, Depends(oauth2_scheme)]
                 status_code= 498,
                 detail="Expired Token"
             )
+    
+    #CHECK SE O POST É DA PESSOA 
+    query = "SELECT creator from veiculosAnuncio creator WHERE id = %s AND ativo = TRUE"
+    cursor = connection.cursor()
+    cursor.execute(query,(item_id,))
+    result = cursor.fetchone()
+
+    if not result:
+         raise HTTPException(
+                status_code= 404,
+                detail="Object Not Found"
+            )
+    
+    if not isAdminUser(userId):
+        if not (result[0] == userId):
+            raise HTTPException(
+                    status_code= 405,
+                    detail="Method Not Allowed to this Object"
+                )
+
     query = "UPDATE veiculosAnuncio SET ativo = 0 WHERE id = %s"
     cursor = connection.cursor()
    
