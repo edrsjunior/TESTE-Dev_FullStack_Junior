@@ -105,7 +105,7 @@ async def loginUser(usuario: UserLogin):
 
 @app.get("/carros")
 async def listarCarros():
-    query = "SELECT id, nome, marca, modelo, ano, km, valor, descricao, photoUrl,creator FROM veiculosAnuncio WHERE ativo = 1"
+    query = "SELECT id, nome, marca, modelo, ano, km, valor, descricao, photoUrl,creator FROM veiculosAnuncio WHERE ativo = 1 ORDER BY valor DESC"
     cursor = connection.cursor()
     
     try:

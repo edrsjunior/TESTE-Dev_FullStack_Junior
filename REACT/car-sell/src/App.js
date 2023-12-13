@@ -1,53 +1,23 @@
-import React, { Component } from "react";
-import axios from "axios";
+import React from "react";
+import Carros from "./Components/Carros";
+import './App.css'
 
-class Carros extends Component {
-  state = {
-    carros: [],
-  };
-
-  componentDidMount() {
-    axios
-      .get("http://localhost:8000/carros")
-      .then((response) => {
-        if (response.status === 200) {
-          this.setState({ carros: JSON.parse(response.data).map((carro) => ({
-            id: carro.id,
-            nome: carro.nome,
-            marca: carro.marca,
-            modelo: carro.modelo,
-            ano: carro.ano,
-            km: carro.km,
-            valor: carro.valor,
-            descricao: carro.descricao,
-            photoUrl: carro.photoUrl,
-          })) });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-
-  render() {
-    return (
-      <div>
-        <h1>Carros</h1>
-        {this.state.carros.map((carro) => (
-          <div key={carro.id}>
-            <h2>{carro.nome}</h2>
-            <p>{carro.marca}</p>
-            <p>{carro.modelo}</p>
-            <p>{carro.ano}</p>
-            <p>{carro.km}</p>
-            <p>{carro.valor}</p>
-            <p>{carro.descricao}</p>
-            <img src={carro.photoUrl}></img>
-          </div>
-        ))}
+const App = () => {
+  return (
+    <div>
+      <nav className="navbar navbar-dark bg-primary">
+        <div className="container-fluid">
+          <a className="navbar-brand" hre="#">
+            Car Shop
+          </a>
+        </div>
+      </nav>
+      <div className="ps-5">
+        <Carros div="veiculos" />
       </div>
-    );
-  }
-}
+    </div>
+    
+  );
+};
 
-export default Carros;
+export default App;
