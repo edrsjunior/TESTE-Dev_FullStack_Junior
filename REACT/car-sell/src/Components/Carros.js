@@ -40,7 +40,7 @@ class Carros extends Component {
                     <h5 className="card-title">{carro.nome} • {carro.modelo} • {carro.marca}</h5>
                     <ul className="list-group list-group-flush">
                     <li className="list-group-item infoAnoKm">Ano: {carro.ano} | KM{carro.km}</li>
-                    <li className="list-group-item valor">R$: {carro.valor}</li>
+                    <li className="list-group-item valor">{carro.valor.toLocaleString('pt-br',{ style: 'currency', currency: 'BRL' })}</li>
                     <li className="list-group-item descricao">{carro.descricao}</li>
                     </ul>
                   </div>
