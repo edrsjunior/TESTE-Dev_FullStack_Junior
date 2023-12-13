@@ -32,17 +32,18 @@ class Carros extends Component {
   
     render() {
       return (
-        <div className="row">
+        <div className="row mt-3 ">
           {this.state.carros.map((carro) => (
-                <div key={carro.id} className="card mt-3 ms-3 col-3" style={{width: '18rem'}}>
+                <div key={carro.id} className="card ms-3 mt-4 col-3" style={{width: '18rem'}}>
                   <img src={carro.photoUrl} className="card-img-top" alt="..." ></img>
-                  <div className="card-body">
+                  <div className="card-body ">
                     <h5 className="card-title">{carro.nome} • {carro.modelo} • {carro.marca}</h5>
-                    <ul className="list-group list-group-flush">
+                    <ul className="list-group list-group-flush ">
                     <li className="list-group-item infoAnoKm">Ano: {carro.ano} | KM{carro.km}</li>
                     <li className="list-group-item valor">{carro.valor.toLocaleString('pt-br',{ style: 'currency', currency: 'BRL' })}</li>
-                    <li className="list-group-item descricao">{carro.descricao}</li>
+                    <li className="list-group-item descricao">{carro.descricao.substr(0,150)}...</li>
                     </ul>
+                    <a href="#" class="btn btn-primary mt-2 col-12">Comprar</a>
                   </div>
                 </div>
           ))}
