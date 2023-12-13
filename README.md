@@ -5,9 +5,11 @@
 
 <p id="description">A ideia do projeto é desenvolver um sistema de catálogo de veículos a venda utilizando Python/FASTAPI e NodeJS/REACT junto a um banco de dados MySQL hospedado na AWS.</p>
 
+<!--
 <h2>🚀 Demo</h2>
 
 [url demo](url demo)
+-->
 
 <h2>Project Screenshots:</h2>
 
