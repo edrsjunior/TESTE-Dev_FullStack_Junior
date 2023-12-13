@@ -1,4 +1,5 @@
 import datetime
+import json
 from typing import Annotated, Union
 from fastapi import Depends, FastAPI, Form, Request, UploadFile, requests
 from fastapi.security import OAuth2PasswordBearer
@@ -23,6 +24,32 @@ SESSION_TIME = 60
 load_dotenv()
 app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+from fastapi.middleware.cors import CORSMiddleware
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins="*",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.get("/")
 async def read_root():
@@ -78,7 +105,7 @@ async def loginUser(usuario: UserLogin):
 
 @app.get("/carros")
 async def listarCarros():
-    query = "SELECT nome, marca, modelo, ano, km, valor, descricao, photoUrl,creator FROM veiculosAnuncio WHERE ativo = 1"
+    query = "SELECT id, nome, marca, modelo, ano, km, valor, descricao, photoUrl,creator FROM veiculosAnuncio WHERE ativo = 1"
     cursor = connection.cursor()
     
     try:
@@ -91,7 +118,12 @@ async def listarCarros():
 
     result = cursor.fetchall()
 
-    return result
+    carros = []
+    for carro in result:
+        carro_dict = dict(zip([coluna[0] for coluna in cursor.description], carro))
+        carros.append(carro_dict)
+
+    return json.dumps(carros)
 
 
 @app.post("/carros")
