@@ -38,6 +38,42 @@ pip install mysql-connector bcrypt cloudinary python-dotenv fastapi PyJWT pydant
 npm i axios react react-dom react-scripts web-vitals
 ```
 
+<p>3. Go to FastAPI directory</p>
+
+```
+ cd .\FASTAPI\
+```
+
+<p>4. Run FastAPI</p>
+
+```
+uvicorn api:app --host 0.0.0.0 --port 8000 --reload
+```
+
+<p>5. Send HTTP requests to</p>
+
+```
+http://localhost:8000
+```
+
+<p>6. Go to REACT App directory</p>
+
+```
+ cd .\REACT\car-sell\
+```
+
+<p>7. Run REACT App</p>
+
+```
+npm start
+```
+
+<p>8. Access the web page on</p>
+
+```
+http://localhost:3000
+```
+
   
   
 <h2>💻 Built with</h2>
