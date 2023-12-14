@@ -1,6 +1,10 @@
 <h1 align="center" id="title">Site de Vendas de Carros Usados</h1>
-<h2>⚠️PARA EMPRESA: O arquivo com as variáveis de ambiente foi enviado no chat para execução do projeto.</h2>
-
+<div>
+  <h3> ⚠️CANDIDATURA: </h3> 
+  <p> <b>1.</b> O arquivo com as variáveis de ambiente foi enviado no chat para execução do projeto.</p>
+  <p> <b>2.</b> Na raiz do projeto existe um arquivo <i>VERZEL_TESTE_LOJA_CARs.postman_collection</i> que possui as solicitações http para o postman com exemplos de como devem ser enviadas </p>
+  <p>Obrigado!😊</p>
+</div>
 <p align="center"><img src="https://socialify.git.ci/edrsjunior/TESTE-Dev_FullStack_Junior/image?description=1&amp;descriptionEditable=Um%20projeto%20feito%20como%20prova%20para%20Dev%20Fullstack%20Junior&amp;forks=1&amp;issues=1&amp;language=1&amp;logo=https%3A%2F%2Fgithub.com%2Fedrsjunior.png&amp;name=1&amp;owner=1&amp;pattern=Signal&amp;pulls=1&amp;stargazers=1&amp;theme=Light" alt="project-image"></p>
 
 <p id="description">A ideia do projeto é desenvolver um sistema de catálogo de veículos a venda utilizando Python/FASTAPI e NodeJS/REACT junto a um banco de dados MySQL hospedado na AWS.</p>
