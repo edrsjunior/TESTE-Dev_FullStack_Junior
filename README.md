@@ -18,7 +18,7 @@
 
 <h2>Project Screenshots:</h2>
 
-<img src="https://github.com/edrsjunior/TESTE-Dev_FullStack_Junior/blob/frontStart/screenshots/Captura%20da%20Web_13-12-2023_191055_localhost.jpeg?raw=true" alt="project-screenshot" width="1920" height="/">
+<img src="https://github.com/edrsjunior/TESTE-Dev_FullStack_Junior/blob/main/screenshots/Example%20App.jpeg" alt="project-screenshot" width="1920" height="/">
 
   
   
