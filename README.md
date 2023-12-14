@@ -28,7 +28,7 @@
 Here're some of the project's best features:
 
 *   No projeto temos as seguintes features/regras de negócio:
-*   Autenticação com token JWT
+*   Autenticação com token JWT, a sessões expiram após 60 minutos
 *   CRUD de Veículos
 *   Somente o usuário dono do post ou os usuários administrativos podem alterar ou deletar um post
 *   Non Destructive Delete
