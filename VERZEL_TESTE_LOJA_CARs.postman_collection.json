@@ -1,0 +1,283 @@
+{
+	"info": {
+		"_postman_id": "dae2a3b2-e227-452d-b201-2d9f695d2c34",
+		"name": "VERZEL_TESTE_LOJA_CARs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31218294"
+	},
+	"item": [
+		{
+			"name": "Cadastrar User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nome\" : \"Felipe\",\r\n    \"sobrenome\" : \"Rodrigo\",\r\n    \"email\" : \"feliperodrigo.com\",\r\n    \"senha\" : \"pass@321\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/users",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"junioredilson.com\",\r\n    \"senha\" : \"pass@321\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/login",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cadastrar Carros",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZXhwIjoxNzAyNTA2MzU5fQ.J3lgzKhwvYdkyUa5ZvzZE9krqPdj7rX44HQex4DN2OM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"contentType": "",
+							"type": "file",
+							"src": "/D:/ARQUIVOS/DOWNLOADS/lamborghini-aventador-lp-780-4-ultimae.jpg"
+						},
+						{
+							"key": "nome",
+							"value": "Aventator",
+							"type": "text"
+						},
+						{
+							"key": "marca",
+							"value": "Lanborgjini",
+							"type": "text"
+						},
+						{
+							"key": "modelo",
+							"value": "lp 780",
+							"type": "text"
+						},
+						{
+							"key": "valor",
+							"value": "2000000",
+							"type": "text"
+						},
+						{
+							"key": "desc",
+							"value": "Com o codinome LP780-4, o Lamborghini Aventador Ultimae usa o tradicional 6.5 V12 aspirado, entregando 780 cv (como está no código) a 8.500 rpm. É levemente mais poderoso do que o SVJ, enquanto manteve o torque de 73,4 kgfm entregues a 6.750 rpm. Tudo isso em uma máquina que pesa apenas 1.550 kg, o que são 25 kg menos do que o Aventador S.",
+							"type": "text"
+						},
+						{
+							"key": "ano",
+							"value": "2021",
+							"type": "text"
+						},
+						{
+							"key": "km",
+							"value": "10000",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/carros",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"carros"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deletar Carros",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZXhwIjoxNzAyNTEyMzE5fQ.NMgxZ2hdNybkDM6X8xed7EVycEjK3QUCHKBF3gZQonU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/carros/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"carros",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar Carros",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/carros",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"carros"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Carros",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZXhwIjoxNzAyNDc2NTYyfQ.oG7GhX_-_xwS0fAoTL9AT05CDtW6CZQ0dX9u16Y3Bik",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "nome",
+							"value": "Fusca",
+							"type": "text"
+						},
+						{
+							"key": "marca",
+							"value": "Audi",
+							"type": "text"
+						},
+						{
+							"key": "ano",
+							"value": "2021",
+							"type": "text"
+						},
+						{
+							"key": "km",
+							"value": "90000",
+							"type": "text"
+						},
+						{
+							"key": "modelo",
+							"value": "12",
+							"type": "text"
+						},
+						{
+							"key": "valor",
+							"value": "240000.56",
+							"type": "text"
+						},
+						{
+							"key": "desc",
+							"value": "Forte e bonito",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/D:/ARQUIVOS/DOWNLOADS/audi_A4.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/carros/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"carros",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
