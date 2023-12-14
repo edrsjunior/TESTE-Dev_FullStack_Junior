@@ -88,3 +88,4 @@ Technologies used in the project:
 *   React
 *   FastAPI
 *   JWT
+*   Bootstrap
