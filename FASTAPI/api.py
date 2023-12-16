@@ -8,7 +8,7 @@ from Middlewares.connectDB import connection
 from Models.userModel import User
 from Models.loginModel import UserLogin
 from  Utils.encryptPass import encryptPass,descriptPass
-from Utils.jwtVerify import verifyJWTToken
+from Utils.jwtTools import validateAccess
 from fastapi import HTTPException
 import jwt
 from dotenv import load_dotenv
@@ -29,6 +29,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # ORIGIN QUANDO FEITO AS REQs HTTP PELO REACT
 
 from fastapi.middleware.cors import CORSMiddleware
+            
 
 origins = [
     "http://localhost",
@@ -151,20 +152,7 @@ async def listarCarros():
 
 async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], ano: Annotated[int, Form()], km: Annotated[float, Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()],image: Annotated[UploadFile, File()],token: Annotated[str, Depends(oauth2_scheme)]):
 
-    try:
-        userId = verifyJWTToken(token)
-           
-    except jwt.exceptions.InvalidSignatureError:
-            raise HTTPException(
-                status_code= 498,
-                detail="Invalid Token"
-            )
-    
-    except jwt.ExpiredSignatureError:
-             raise HTTPException(
-                status_code= 498,
-                detail="Expired Token"
-            )
+    userId = validateAccess(token)
 
    
     #AGORA VAMOS SALVAr AS INFOs no BD e a URL DO CAR
@@ -193,20 +181,7 @@ async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form(
 
 @app.delete("/carros/{item_id}")
 async def deleteCarro(item_id: int,token: Annotated[str, Depends(oauth2_scheme)]):
-    try:
-        userId = verifyJWTToken(token)
-        
-    except jwt.exceptions.InvalidSignatureError:
-            raise HTTPException(
-                status_code= 498,
-                detail="Invalid Token"
-            )
-
-    except jwt.ExpiredSignatureError:
-                raise HTTPException(
-                status_code= 498,
-                detail="Expired Token"
-            )
+    userId = validateAccess(token)
     
     #CHECK SE O POST É DA PESSOA 
     query = "SELECT creator from veiculosAnuncio creator WHERE id = %s AND ativo = TRUE"
@@ -235,20 +210,7 @@ async def deleteCarro(item_id: int,token: Annotated[str, Depends(oauth2_scheme)]
 
 @app.put("/carros/{item_id}")
 async def updateCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], ano: Annotated[int, Form()], km: Annotated[float, Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()],image: Annotated[UploadFile, File()],item_id: int,token: Annotated[str, Depends(oauth2_scheme)]):   
-    try:
-        userId = verifyJWTToken(token)
-        
-    except jwt.exceptions.InvalidSignatureError:
-            raise HTTPException(
-                status_code= 498,
-                detail="Invalid Token"
-            )
-
-    except jwt.ExpiredSignatureError:
-                raise HTTPException(
-                status_code= 498,
-                detail="Expired Token"
-            )
+    userId = validateAccess(token)
     
     #CHECK SE O POST É DA PESSOA 
     query = "SELECT creator from veiculosAnuncio creator WHERE id = %s AND ativo = TRUE"
