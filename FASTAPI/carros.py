@@ -12,7 +12,7 @@ from fastapi import FastAPI, File, UploadFile
 car = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")          
 
-@car.post("/cadastrar/{item_id}")
+@car.post("/cadastrar")
 
 # Annotated[str,Form()] informa que o dado vira de um multipart 
 
