@@ -1,6 +1,8 @@
 from typing import Annotated
-from fastapi import Depends, FastAPI, Form, UploadFile
+from fastapi import Depends, FastAPI, Form, Request, UploadFile
+from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
+import jwt
 from Middlewares.checkAdm import isAdminUser
 from Middlewares.connectDB import connection
 from Utils.jwtTools import validateAccess
@@ -12,15 +14,32 @@ from fastapi import FastAPI, File, UploadFile
 car = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")          
 
+@car.middleware("http")
+async def verificaToken(req: Request, call_next):
+    try:    
+        token = req.headers["authorization"].split(" ")[1]
+        userId = validateAccess(token)
+        req.state.userId = userId
+        response = await call_next(req)
+        return response
+    except:
+            return JSONResponse(content={
+            "message": "Unauthorized"
+        }, status_code=498)
+    
+  
+    
+  
+
+    
+
 @car.post("/cadastrar")
 
 # Annotated[str,Form()] informa que o dado vira de um multipart 
 
-async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], ano: Annotated[int, Form()], km: Annotated[float, Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()],image: Annotated[UploadFile, File()],token: Annotated[str, Depends(oauth2_scheme)]):
+async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], ano: Annotated[int, Form()], km: Annotated[float, Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()],image: Annotated[UploadFile, File()],req: Request):
 
-    userId = validateAccess(token)
-
-   
+    userId = req.state.userId
     #AGORA VAMOS SALVAr AS INFOs no BD e a URL DO CAR
     query = "INSERT INTO veiculosAnuncio (nome, marca, modelo, ano, km, valor, descricao,creator) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
     cursor = connection.cursor()
@@ -46,8 +65,8 @@ async def cadastrarCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form(
     return {"idPostCreated" : lastInsert}
 
 @car.delete("/delete/{item_id}")
-async def deleteCarro(item_id: int,token: Annotated[str, Depends(oauth2_scheme)]):
-    userId = validateAccess(token)
+async def deleteCarro(item_id: int,req: Request):
+    userId = req.state.userId
     
     #CHECK SE O POST É DA PESSOA 
     query = "SELECT creator from veiculosAnuncio creator WHERE id = %s AND ativo = TRUE"
@@ -75,8 +94,9 @@ async def deleteCarro(item_id: int,token: Annotated[str, Depends(oauth2_scheme)]
     connection.commit()
 
 @car.put("/update/{item_id}")
-async def updateCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], ano: Annotated[int, Form()], km: Annotated[float, Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()],image: Annotated[UploadFile, File()],item_id: int,token: Annotated[str, Depends(oauth2_scheme)]):   
-    userId = validateAccess(token)
+async def updateCarro(nome: Annotated[str,Form()], marca: Annotated[str,Form()], modelo: Annotated[str,Form()], ano: Annotated[int, Form()], km: Annotated[float, Form()], valor: Annotated[float,Form()], desc: Annotated[str,Form()],image: Annotated[UploadFile, File()],item_id: int,req: Request):  
+
+    userId = req.state.userId
     
     #CHECK SE O POST É DA PESSOA 
     query = "SELECT creator from veiculosAnuncio creator WHERE id = %s AND ativo = TRUE"
