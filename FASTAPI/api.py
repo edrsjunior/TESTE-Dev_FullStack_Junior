@@ -1,23 +1,17 @@
 import datetime
 import json
-from typing import Annotated, Union
-from fastapi import Depends, FastAPI, Form, Request, UploadFile, requests
+from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordBearer
-from Middlewares.checkAdm import isAdminUser
-from Middlewares.connectDB import connection
+from DATABASE.connectDB import connection
 from DTOs.userModel import User
 from DTOs.loginModel import UserLogin
 from  Utils.encryptPass import encryptPass,descriptPass
-from Utils.jwtTools import validateAccess
 from fastapi import HTTPException
 import jwt
 from dotenv import load_dotenv
 import os
-from DTOs.carroModel import Carro
-from Utils.imageControler import uploadImg,deleteImg
-from pydantic import BaseModel
-from fastapi import FastAPI, Form
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI
+from fastapi import FastAPI
 
 from carros import car
 

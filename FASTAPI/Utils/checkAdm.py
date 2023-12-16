@@ -1,4 +1,4 @@
-from Middlewares.connectDB import connection
+from DATABASE.connectDB import connection
 
 def isAdminUser(userId: int) -> bool:
     cursor = connection.cursor()

@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nome\" : \"Felipe\",\r\n    \"sobrenome\" : \"Rodrigo\",\r\n    \"email\" : \"feliperodrigo.com\",\r\n    \"senha\" : \"pass@321\"\r\n}",
+					"raw": "{\r\n    \"nome\" : \"Dilso\",\r\n    \"sobrenome\" : \"Rodrigue\",\r\n    \"email\" : \"dilsorodrigues.com\",\r\n    \"senha\" : \"pass@321\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -38,13 +38,44 @@
 			"response": []
 		},
 		{
-			"name": "Login",
+			"name": "Login Admin",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\" : \"junioredilson.com\",\r\n    \"senha\" : \"pass@321\"\r\n}",
+					"raw": "{\r\n    \"email\" : \"admin001.com\",\r\n    \"senha\" : \"adm@321\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/login",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login Copy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"dilsorodrigues.com\",\r\n    \"senha\" : \"pass@321\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -76,7 +107,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZXhwIjoxNzAyNTA2MzU5fQ.J3lgzKhwvYdkyUa5ZvzZE9krqPdj7rX44HQex4DN2OM",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZXhwIjoxNzAyNjUyOTc3fQ.Sjo1ZefMDMIdob46yCJFexmBBRY4DLFgGYqDJFnJ0p4",
 							"type": "string"
 						}
 					]
@@ -90,11 +121,11 @@
 							"key": "image",
 							"contentType": "",
 							"type": "file",
-							"src": "/D:/ARQUIVOS/DOWNLOADS/lamborghini-aventador-lp-780-4-ultimae.jpg"
+							"src": "/D:/ARQUIVOS/DOWNLOADS/audi_A4.jpg"
 						},
 						{
 							"key": "nome",
-							"value": "Aventator",
+							"value": "Aventator_TESTE",
 							"type": "text"
 						},
 						{
@@ -130,7 +161,7 @@
 					]
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/carros",
+					"raw": "http://127.0.0.1:8000/carros/cadastrar",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -140,7 +171,8 @@
 					],
 					"port": "8000",
 					"path": [
-						"carros"
+						"carros",
+						"cadastrar"
 					]
 				}
 			},
@@ -154,7 +186,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZXhwIjoxNzAyNTEyMzE5fQ.NMgxZ2hdNybkDM6X8xed7EVycEjK3QUCHKBF3gZQonU",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZXhwIjoxNzAyNjUyOTc3fQ.Sjo1ZefMDMIdob46yCJFexmBBRY4DLFgGYqDJFnJ0p4",
 							"type": "string"
 						}
 					]
@@ -162,7 +194,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:8000/carros/1",
+					"raw": "http://127.0.0.1:8000/carros/delete/3",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -173,7 +205,8 @@
 					"port": "8000",
 					"path": [
 						"carros",
-						"1"
+						"delete",
+						"3"
 					]
 				}
 			},
@@ -209,7 +242,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZXhwIjoxNzAyNDc2NTYyfQ.oG7GhX_-_xwS0fAoTL9AT05CDtW6CZQ0dX9u16Y3Bik",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZXhwIjoxNzAyNzUzNzU5fQ.fVe2ixz7xPtPQwQ0SAK7zxEc3On4dQLXa1iL0GQ89So",
 							"type": "string"
 						}
 					]
@@ -221,48 +254,48 @@
 					"formdata": [
 						{
 							"key": "nome",
-							"value": "Fusca",
+							"value": "Kombi_UPDATE",
 							"type": "text"
 						},
 						{
 							"key": "marca",
-							"value": "Audi",
+							"value": "volkswagen",
 							"type": "text"
 						},
 						{
 							"key": "ano",
-							"value": "2021",
+							"value": "1997",
 							"type": "text"
 						},
 						{
 							"key": "km",
-							"value": "90000",
+							"value": "20000",
 							"type": "text"
 						},
 						{
 							"key": "modelo",
-							"value": "12",
+							"value": "98",
 							"type": "text"
 						},
 						{
 							"key": "valor",
-							"value": "240000.56",
+							"value": "9000",
 							"type": "text"
 						},
 						{
 							"key": "desc",
-							"value": "Forte e bonito",
+							"value": "A VW Kombi foi o carro com maior tempo de produção no Brasil, com 56 anos (1957-2013). Ganhou vários apelidos, mas foi erroneamente chamada pelo mercado de perua, principalmente no transporte escolar.",
 							"type": "text"
 						},
 						{
 							"key": "image",
 							"type": "file",
-							"src": "/D:/ARQUIVOS/DOWNLOADS/audi_A4.jpg"
+							"src": "/D:/ARQUIVOS/DOWNLOADS/konbe.jpg"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/carros/1",
+					"raw": "http://127.0.0.1:8000/carros/update/3",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -273,7 +306,8 @@
 					"port": "8000",
 					"path": [
 						"carros",
-						"1"
+						"update",
+						"3"
 					]
 				}
 			},

@@ -1,10 +1,9 @@
 from typing import Annotated
-from fastapi import Depends, FastAPI, Form, Request, UploadFile
+from fastapi import FastAPI, Form, Request, UploadFile
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
-import jwt
-from Middlewares.checkAdm import isAdminUser
-from Middlewares.connectDB import connection
+from Utils.checkAdm import isAdminUser
+from DATABASE.connectDB import connection
 from Utils.jwtTools import validateAccess
 from fastapi import HTTPException
 from Utils.imageControler import uploadImg
@@ -27,12 +26,6 @@ async def verificaToken(req: Request, call_next):
             "message": "Unauthorized"
         }, status_code=498)
     
-  
-    
-  
-
-    
-
 @car.post("/cadastrar")
 
 # Annotated[str,Form()] informa que o dado vira de um multipart 
